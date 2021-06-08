@@ -1,89 +1,56 @@
-<html>
+<!DOCTYPE html>
 
 <head>
-    <meta charset=utf-8 />
-    <title>Simple FeatureLayer</title>
-    <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
-
-    <!-- Load Leaflet from CDN-->
-    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css" />
-    <script src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
-    <link rel="stylesheet" type="text/css"
-        href="http://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css">
-    <!-- Load Esri Leaflet from CDN -->
-    <script src="http://cdn-geoweb.s3.amazonaws.com/esri-leaflet/1.0.0-rc.5/esri-leaflet.js"></script>
-
+    <title>Example</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
+    integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
+    crossorigin=""></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.0.2/dist/leaflet.css" />
     <style>
         body {
+            font-family: Helvetica;
             margin: 0;
-            padding: 0;
         }
 
         #map {
             position: absolute;
             top: 0;
             bottom: 0;
-            right: 0;
-            left: 0;
-            height: 880px;
+            width: 100%;
         }
     </style>
 </head>
 
 <body>
-
     <div id="map"></div>
-
     <script>
 
-        let factor;
-        let markers = [];
-        iconInitWidth = 32;
-        iconInitHeight = 32;
-        var mymap = L.map('map').setView([43.0618, 141.3545], 7);
-        //New class of icons
-        const MyIcon = L.Icon.extend({
-            options: {
-                iconSize: new L.Point(iconInitWidth, iconInitHeight) //Define your iconInitWidth and iconInitHeight before
-            },
+        var sites = [
+            { 'loc': [42.2793869135936, 9.53257201027757], 'title': 'TORRA A I CASELLI' },
+            { 'loc': [42.2713622720985, 9.50678498185463], 'title': 'TOUR GIANDINELLI' },
+            { 'loc': [42.641518105666, 9.00587322013212], 'title': 'TOUR DE LOSARI' },];
+
+        var map = new L.Map('map');
+        map.addLayer(new L.TileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'));
+        map.setView([42.5, 9.2210706018535], 9);
+
+        var marks = new L.LayerGroup();
+        for (i in sites) {
+            var title = sites[i].title,
+                loc = sites[i].loc,
+                markersites = new L.Marker(new L.latLng(loc), { title: title });
+            markersites.bindPopup('<strong>' + title + '</strong><br>');
+            marks.addLayer(markersites);
+        }
+        marks.addTo(map);
+
+        // for now it is all good, the next part is where I fail
+
+        marks.on('click', function () {
+            console.log("Yeah!");
+            new L.circle(this.getLatLng(), 10000, { color: 'red', fillOpacity: 0.3 }).addTo(map)
         });
-
-        /*------------ Functions - Callbacks ----------------*/
-        //Small function to keep the factor up to date with the current zoom
-        function updateFactor() {
-            let currentZoom = mymap.getZoom();
-            factor = Math.pow(currentZoom / mymap.options.zoom, 5);
-        };
-        updateFactor();
-
-        //Create a new marker
-        function makeMarker(e) {
-            const newX = Math.round(iconInitWidth * factor);
-            const newY = newX * iconInitHeight / iconInitWidth;
-
-            const newMarker = new L.Marker(new L.LatLng(e.latlng.lat, e.latlng.lng), {
-                icon: new MyIcon({ iconSize: new L.Point(newX, newY) })
-            }).addTo(mymap);
-
-            markers[markers.length] = newMarker;
-        }
-
-        //Update the marker
-        function resize(e) {
-            updateFactor();
-
-            for (const marker of markers) {
-
-                const newX = Math.round(iconInitWidth * factor);
-                const newY = newX * iconInitHeight / iconInitWidth;
-
-                marker.setIcon(new MyIcon({ iconSize: new L.Point(newX, newY) }));
-            }
-        }
-
-        /*------------ Event listeners ----------------*/
-        mymap.addEventListener('click', makeMarker);
-        mymap.on('zoom', resize);
 
     </script>
 </body>

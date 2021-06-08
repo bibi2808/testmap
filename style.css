@@ -1,0 +1,65 @@
+/* button {position: absolute; left:10 px; top: 70px;} */
+#mapid {
+  height: 580px;
+}
+
+.infor {
+  position: absolute;
+  background-color: rgba(255, 255, 255, 0.9);
+  visibility: hidden;
+  /*	width: calc(100% - 30px);*/
+  padding: 1rem;
+  bottom: 0;
+}
+
+.infor dl dt {
+  border-bottom: 1px solid #ccc;
+}
+
+.infor .close {
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+
+.close {
+  float: right;
+  font-size: 1.5rem;
+  font-weight: 700;
+  line-height: 1;
+  color: #000;
+  text-shadow: 0 1px 0 #fff;
+  opacity: 0.5;
+}
+
+.infor a span {
+  background-color: #9f3c31;
+  color: #fff;
+  padding: 0.5rem 3rem;
+  display: inline-block;
+  font-weight: 700;
+  border: 1px solid #9f3c31;
+}
+
+.infor a {
+  display: block;
+  text-align: center;
+  margin-top: 2rem;
+}
+
+.infor a span:hover {
+  color: #9f3c31;
+  background-color: #fff;
+  transition: 0.3s;
+  text-decoration: none;
+}
+
+.close:hover {
+  background: #bbb;
+  cursor: pointer;
+}
+
+.daoanhtuan {
+  width: 64px;
+  height: 64px;
+}

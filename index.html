@@ -15,72 +15,7 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"
         integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
     <title>Document</title>
-    <style>
-        #mapid {
-            height: 580px;
-        }
-
-        .infor {
-            position: absolute;
-            background-color: rgba(255, 255, 255, .9);
-            visibility: hidden;
-            /*	width: calc(100% - 30px);*/
-            padding: 1rem;
-            bottom: 0;
-        }
-
-        .infor dl dt {
-            border-bottom: 1px solid #ccc;
-        }
-
-        .infor .close {
-            position: absolute;
-            right: 0;
-            top: 0;
-        }
-
-        .close {
-            float: right;
-            font-size: 1.5rem;
-            font-weight: 700;
-            line-height: 1;
-            color: #000;
-            text-shadow: 0 1px 0 #fff;
-            opacity: .5;
-        }
-
-        .infor a span {
-            background-color: #9f3c31;
-            color: #fff;
-            padding: .5rem 3rem;
-            display: inline-block;
-            font-weight: 700;
-            border: 1px solid #9f3c31;
-        }
-
-        .infor a {
-            display: block;
-            text-align: center;
-            margin-top: 2rem;
-        }
-
-        .infor a span:hover {
-            color: #9f3c31;
-            background-color: #fff;
-            transition: .3s;
-            text-decoration: none;
-
-        }
-
-        .close:hover {
-            background: #bbb;
-            cursor: pointer;
-        }
-        .daoanhtuan{
-            width: 64px;
-            height: 64px;
-        }
-    </style>
+    <link rel="stylesheet" href="./style.css">
 </head>
 
 <body>
@@ -88,64 +23,9 @@
     <div id="mapid">
     </div>
     <div class="infor"></div>
-    <script type="text/javascript">
-        const myItems = [
-            ['Sapporo', 43.0618, 141.3545],
-            ['Hakodate', 41.7687, 140.7291],
-            ['Otaru', 43.1902, 140.9942],
-            ['Chitose', 42.8213, 141.6510],
-            ['Aomori', 40.8222, 140.7474],
-            ['Noboribetsu', 42.4128, 141.1066],
-            ['Erimo', 42.0163, 143.1486],
-            ['Urakawa', 42.1686, 142.7685]
-        ];
-
-        let marker;
-        var map = L.map('mapid').setView([43.0618, 141.3545], 7);
-
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
-        }).addTo(map);
-
-        for (var i = 0; i < myItems.length; i++) {
-            const item = myItems[i];
-            var pin = i + 1;
-            var myIcon = L.icon({
-                iconUrl: './images/pin0' + pin + '.png'
-            });
-            marker = L.marker([item[1], item[2]], { icon: myIcon }).addTo(map).bindPopup(item[0]);
-
-            marker.on('click', onMapClick);
-
-            function onMapClick(e) {
-                
-                var currentZoom = map.getZoom();
-                map.setView(e.latlng, 8);
-                console.log(e.target._leaflet_id)
-                console.log(this._leaflet_id)
-               
-                getInforMarker(marker)
-            }
-        }
-        const getInforMarker = (marker) => {
-            let information = $(".infor");
-            let title = '(関連資産)';
-            let template =
-                `<dl>
-                    <dt><small>TITLE</small></dt>
-                    <dd>
-                        description
-                        <a href="#"><span>Read more</span></a>
-                    </dd>
-                    <div class="close" > &times;</div>
-                </dl>
-                `;
-            information.html(template)
-            information.css('visibility', 'visible')
-            $(".close").on('click', function () {
-                $(this).closest(".infor").css('visibility', 'hidden')
-            });
-        }
+    <div><button>click me</button></div>
+    <script type="text/javascript" src="./index.js">
+        
     </script>
 </body>
 
