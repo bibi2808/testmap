@@ -1,56 +1,114 @@
 <!DOCTYPE html>
+<html>
 
 <head>
-    <title>Example</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
-    integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
-    crossorigin=""></script>
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.0.2/dist/leaflet.css" />
-    <style>
-        body {
-            font-family: Helvetica;
-            margin: 0;
-        }
 
-        #map {
-            position: absolute;
-            top: 0;
-            bottom: 0;
-            width: 100%;
-        }
-    </style>
+    <title>Quick Start - Leaflet</title>
+
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" type="image/x-icon" href="docs/images/favicon.ico" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/leaflet-geometryutil@0.9.1/src/leaflet.geometryutil.min.js"></script>
+
+
 </head>
 
 <body>
-    <div id="map"></div>
+    <div id="mapid" style="width: 600px; height: 400px;"></div>
+    <a class="openpopuplink" data-id="1" href="#">Marker 1</a>
+    <span class="openpopuplink" data-id="2">Marker 2</span>
+    <a class="openpopuplink" data-id="3" href="#">Marker 3</a>
+    <span class="openpopuplink" data-id="4">Marker 4</span>
     <script>
+       
+        var mymap = L.map('mapid').setView([41.957687010888, 140.92544496059], 7);
 
-        var sites = [
-            { 'loc': [42.2793869135936, 9.53257201027757], 'title': 'TORRA A I CASELLI' },
-            { 'loc': [42.2713622720985, 9.50678498185463], 'title': 'TOUR GIANDINELLI' },
-            { 'loc': [42.641518105666, 9.00587322013212], 'title': 'TOUR DE LOSARI' },];
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+        }).addTo(mymap);
 
-        var map = new L.Map('map');
-        map.addLayer(new L.TileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'));
-        map.setView([42.5, 9.2210706018535], 9);
-
-        var marks = new L.LayerGroup();
-        for (i in sites) {
-            var title = sites[i].title,
-                loc = sites[i].loc,
-                markersites = new L.Marker(new L.latLng(loc), { title: title });
-            markersites.bindPopup('<strong>' + title + '</strong><br>');
-            marks.addLayer(markersites);
+        let markers = [
+        {
+            id: 1,
+            description: "1",
+            lat: 40.198055555556,
+            lng: 141.30583333333,
+            title: "北黄金貝塚",
+            url: "https://jomon-japan.unifiedx.dev/learn/jomon-sites/kitakogane",
+            site_locality: "伊達市",
+            site_class: "core",
+            alt: "北黄金貝塚"
+        },
+        {
+            id: 2,
+            description: "2",
+            lat: 42.402222222222,
+            lng: 140.91166666667,
+            title: "北黄金貝塚",
+            url: "https://jomon-japan.unifiedx.dev/learn/jomon-sites/kitakogane",
+            site_locality: "伊達市",
+            site_class: "core",
+            alt: "北黄金貝塚",
+    
+        },
+        {
+            id: 3,
+            description: "3",
+            lat: 41.957687010888,
+            lng: 140.92544496059,
+            title: "大船遺跡",
+            url: "https://jomon-japan.unifiedx.dev/learn/jomon-sites/ofune",
+            site_locality: "函館市",
+            site_class: "core",
+            alt: "大船遺跡"
+        },
+        {
+            id: 4,
+            description: "4",
+            lat: 42.542777777778,
+            lng: 140.77527777778,
+            title: "入江貝塚",
+            url: "https://jomon-japan.unifiedx.dev/learn/jomon-sites/irie",
+            site_locality: "洞爺湖町",
+            site_class: "core",
+            alt: "入江貝塚"
         }
-        marks.addTo(map);
+    ];
 
-        // for now it is all good, the next part is where I fail
+        var fg = L.featureGroup().addTo(mymap);
 
-        marks.on('click', function () {
-            console.log("Yeah!");
-            new L.circle(this.getLatLng(), 10000, { color: 'red', fillOpacity: 0.3 }).addTo(map)
-        });
+
+        for (var i = 0; i < markers.length; ++i) {
+            var popup = '<h3>' + markers[i].description + '</h3>';
+            var m = L.marker([markers[i].lat, markers[i].lng], { id: markers[i].id }).bindPopup(popup);
+            fg.addLayer(m);
+            m.on('click', onMapClick);
+        }
+
+        function onMapClick(e) {
+            mymap.setView(this._latlng, 8);
+        // getInforMarker(marker)
+    }
+
+        //Link on the same page
+        var classname = document.getElementsByClassName("openpopuplink");
+
+        var openMarkerPopup = function () {
+            var id = this.getAttribute("data-id");
+            fg.eachLayer(function (layer) {
+                console.log(layer)
+                if (layer.options.id && layer.options.id == id) {
+                    layer.openPopup();
+                    mymap.setView(layer._latlng, 8)
+                }
+            });
+        };
+
+        for (var i = 0; i < classname.length; i++) {
+            classname[i].addEventListener('click', openMarkerPopup, false);
+        }
 
     </script>
 </body>
