@@ -16,7 +16,7 @@
   border-bottom: 1px solid #ccc;
 }
 
-.infor .close {
+.close {
   position: absolute;
   right: 0;
   top: 0;
@@ -62,4 +62,8 @@
 .daoanhtuan {
   width: 64px;
   height: 64px;
+}
+
+.list_markers {
+  float: right;
 }
