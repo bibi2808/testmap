@@ -7,6 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="shortcut icon" type="image/x-icon" href="docs/images/favicon.ico" />
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css" />
+    <link rel="stylesheet" href="./style.css">
     <script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/leaflet-geometryutil@0.9.1/src/leaflet.geometryutil.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -172,7 +173,7 @@
                     setIcon(newMarker, [50, 50], true)
                 }
             }
-            
+
             //Link on the same marker
             let classname = $(".gmap-marker").each(function () {
                 $(this).on('click', function () {
@@ -198,9 +199,32 @@
                     iconUrl: element.options.icon.options.iconUrl,
                     iconSize: sizeIcon
                 });
-                element.setIcon(customIcon)
+                element.setIcon(customIcon);
+                console.log(element)
+                getInforMarker();
+            }
+
+            // CREATE FORM CONTENT FOR MARKER
+            function getInforMarker(marker) {
+                let information = $(".infor");
+                let title = '(関連資産)';
+                let template =
+                    '<dl>' +
+                    '<dt><small>${title}</small></dt>' +
+                    '<dd>' +
+                    'description' +
+                    '<a href="#"><span>Read more</span></a>' +
+                    '</dd>' +
+                    '<div class="close" > &times;</div>' +
+                    '</dl>';
+                information.html(template)
+                information.css('visibility', 'visible')
+                $(".close").on('click', function () {
+                    $(this).closest(".infor").css('visibility', 'hidden')
+                });
             }
         })
     </script>
 </body>
+
 </html>
