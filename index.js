@@ -179,8 +179,6 @@ $(function () {
             iconSize: sizeIcon
         });
         element.setIcon(customIcon);
-        // console.log(element);
-
     }
 
     // CREATE FORM CONTENT FOR MARKER
@@ -203,11 +201,5 @@ $(function () {
         $(".close").on('click', function () {
             $(this).closest(".infor").css('visibility', 'hidden')
         });
-    }
-
-    function twodic(item){
-       let info = $(".infor");
-       let title = item.title;
-       let template = 'div'
     }
 })
