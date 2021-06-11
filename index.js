@@ -7,17 +7,6 @@ $(function () {
     }).addTo(mymap);
 
     let markers = [
-        // {
-        //     id: 1,
-        //     description: "1",
-        //     lat: 40.198055555556,
-        //     lng: 141.30583333333,
-        //     title: "北黄金貝塚",
-        //     url: "https://jomon-japan.unifiedx.dev/learn/jomon-sites/kitakogane",
-        //     site_locality: "伊達市",
-        //     site_class: "core",
-        //     alt: "北黄金貝塚"
-        // },
         {
             id: 2,
             description: "2",
@@ -74,28 +63,28 @@ $(function () {
             site_class: "core",
             alt: "キウス周堤墓群"
         },
-        // {
-        //     id: 7,
-        //     description: "7",
-        //     lat: 40.271388888889,
-        //     lng: 140.80444444444,
-        //     title: "キウス周堤墓群",
-        //     url: "https://jomon-japan.unifiedx.dev/learn/jomon-sites/irie",
-        //     site_locality: "千歳市",
-        //     site_class: "core",
-        //     alt: "キウス周堤墓群"
-        // },
-        // {
-        //     id: 8,
-        //     description: "8",
-        //     lat: 40.198055555556,
-        //     lng: 141.30583333333,
-        //     title: "キウス周堤墓群",
-        //     url: "https://jomon-japan.unifiedx.dev/learn/jomon-sites/irie",
-        //     site_locality: "千歳市",
-        //     site_class: "core",
-        //     alt: "キウス周堤墓群"
-        // }
+        {
+            id: 7,
+            description: "hakodate",
+            lat: 41.77583,
+            lng: 140.73667,
+            title: "hakodate",
+            url: "https://jomon-japan.unifiedx.dev/learn/jomon-sites/irie",
+            site_locality: "千歳市",
+            site_class: "core",
+            alt: "hakodate"
+        },
+        {
+            id: 8,
+            description: "aomori",
+            lat: 40.757984,
+            lng: 140.432846,
+            title: "aomori",
+            url: "https://jomon-japan.unifiedx.dev/learn/jomon-sites/irie",
+            site_locality: "千歳市",
+            site_class: "core",
+            alt: "aomori"
+        }
 
     ];
 
@@ -130,36 +119,44 @@ $(function () {
             'width="32">' + item.alt +
             '</a>' +
             '</li>';
-        m.on('click', onMapClick);
+        m.on('click', function () {
+            if (newMarker !== "") {
+                // existing 
+                oldMarker = newMarker;
+                newMarker = this;
+                setIcon(newMarker, [50, 50], true)
+                setIcon(oldMarker, [25, 25], false);
+            } else {
+                // start
+                newMarker = this;
+                setIcon(newMarker, [50, 50], true)
+            }
+            getInforMarker(item);
+        });
     }
     template += '</ul>';
     playList.html(template);
 
     let oldMarker = "", newMarker = "";
 
-    function onMapClick() {
-        if (newMarker !== "") {
-            // existing 
-            oldMarker = newMarker;
-            newMarker = this;
-            setIcon(newMarker, [50, 50], true)
-            setIcon(oldMarker, [25, 25], false);
-        } else {
-            // start
-            newMarker = this;
-            setIcon(newMarker, [50, 50], true)
-        }
-    }
-
     //Link on the same marker
     $(".gmap-marker").each(function () {
         $(this).on('click', function (ev) {
             ev.preventDefault();
-            let id = this.getAttribute("data-id");
+            let data = {
+                id: this.getAttribute("data-id"),
+                description: this.getAttribute("data-description"),
+                lat: this.getAttribute("data-lat"),
+                lng: this.getAttribute("data-lng"),
+                title: this.getAttribute("data-title"),
+                url: this.getAttribute("data-url"),
+                site_locality: this.getAttribute("data-site-locality")
+            }
             fg.eachLayer(function (layer) {
-                if (layer.options.id && layer.options.id == id) {
+                if (layer.options.id && layer.options.id == data.id) {
                     newMarker = layer;
-                    setIcon(layer, [50, 50], true)
+                    setIcon(layer, [50, 50], true);
+                    getInforMarker(data);
                 } else {
                     setIcon(layer, [25, 25], false);
                 }
@@ -169,36 +166,48 @@ $(function () {
 
     // SET ICON
     function setIcon(element, sizeIcon, option = null) {
-        // console.log(element)
         if (option) {
-            mymap.setView(element._latlng, 8);
+            mymap.setView(element._latlng, 8, {
+                "animate": true,
+                "pan": {
+                    "duration": 0.5
+                }
+            });
         }
         var customIcon = L.icon({
             iconUrl: element.options.icon.options.iconUrl,
             iconSize: sizeIcon
         });
         element.setIcon(customIcon);
-        console.log(element)
-        getInforMarker();
+        // console.log(element);
+
     }
 
     // CREATE FORM CONTENT FOR MARKER
-    function getInforMarker() {
+    function getInforMarker(item) {
+        console.log(item);
         let information = $(".infor");
-        let title = '(関連資産)';
+        let title = ('assoc' === item.site_class) ? `${item.title} (関連資産)` : `${item.title}`;
         let template =
-            '<dl>' +
-            '<dt><small>${title}</small></dt>' +
-            '<dd>' +
-            'description' +
-            '<a href="#"><span>Read more</span></a>' +
-            '</dd>' +
-            '<div class="close" > &times;</div>' +
-            '</dl>';
+            `<dl>
+                    <dt>${title} <small>${item.site_locality}</small></dt>
+                    <dd>
+                        ${item.description}
+                        <a href="${item.url}"><span>Read more</span></a>
+                    </dd>
+                    <div class="close" > &times;</div>
+                </dl>
+                `;
         information.html(template)
         information.css('visibility', 'visible')
         $(".close").on('click', function () {
             $(this).closest(".infor").css('visibility', 'hidden')
         });
+    }
+
+    function twodic(item){
+       let info = $(".infor");
+       let title = item.title;
+       let template = 'div'
     }
 })
